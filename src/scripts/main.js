@@ -1,8 +1,5 @@
-'use strict';
-
 const body = document.querySelector('body');
 const logo = document.querySelector('.logo');
-const div = document.createElement('div');
 
 const promise1 = new Promise((resolve, reject) => {
   logo.addEventListener('click', () => {
@@ -16,18 +13,22 @@ const promise2 = new Promise((resolve, reject) => {
   }, 3000);
 });
 
-promise1
-  .then((result) => {
-    body.appendChild(div);
-    div.classList.add('message');
-    div.textContent = result;
-  })
-  .catch(() => {});
+const showSuccessMessage = (message) => {
+  const div = document.createElement('div');
 
-promise2
-  .then((result) => {})
-  .catch((error) => {
-    body.appendChild(div);
-    div.classList.add('message', 'error-message');
-    div.textContent = error;
-  });
+  div.className = 'message';
+  div.textContent = message;
+  body.appendChild(div);
+};
+
+const showErrorMessage = (error) => {
+  const div = document.createElement('div');
+
+  div.className = 'message error-message';
+  div.textContent = error.message;
+  body.appendChild(div);
+};
+
+Promise.race([promise1, promise2])
+  .then(showSuccessMessage)
+  .catch(showErrorMessage);
